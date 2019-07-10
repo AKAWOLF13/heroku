@@ -31,3 +31,4 @@ def logout(request):
         auth.logout(request)
         return redirect('blog')
     return render(request, 'signup.html')
+

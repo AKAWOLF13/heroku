@@ -5,4 +5,5 @@ urlpatterns = [
     path('blogapp/<int:blog_id>/', views.detail, name='detail'),
     path('new/',views.new, name='new'),
     path('blogapp/create/', views.create, name='create'),
+    path('newblog/',views.blogpost, name='nowblog'),
 ]

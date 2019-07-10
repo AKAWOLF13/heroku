@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.core.paginator import Paginator
 from .models import Blog
+from .forms import BlogPost
 
 def home(request):
     blogs = Blog.objects
@@ -26,5 +27,16 @@ def create(request):
     blog.save()
 
     return redirect('/blog/'+str(blog.id))
+def blogpost(request):
+    if request.method == 'POST':
+        form = Blogpost(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.pub_date=timezone.now()
+            post.save()
+            return redirect('home')
+    else:
+        form = BlogPost()
+        return render(request, 'new.html',{'form':form})
     #url 은 항상 문자열임
 # Create your views here.

@@ -2,7 +2,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.core.paginator import Paginator
 from .models import Blog
-from .forms import BlogPost
+from .forms import BlogPost, CommentForm
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib import auth
+
 
 def home(request):
     blogs = Blog.objects
@@ -29,7 +33,7 @@ def create(request):
     return redirect('/blog/'+str(blog.id))
 def blogpost(request):
     if request.method == 'POST':
-        form = Blogpost(request.POST)
+        form = BlogPost(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
             post.pub_date=timezone.now()
@@ -38,5 +42,35 @@ def blogpost(request):
     else:
         form = BlogPost()
         return render(request, 'new.html',{'form':form})
+
+def update(request, pk):
+    blog = get_object_or_404(Blog, pk = pk)
+    form = BlogPost(request.POST,instance=blog)
+
+    if form.is_valid():
+       form.save()
+       return redirect('home')
+
+    return render(request, 'new.html',{'form':form})
+
+
+def delete(request, pk):
+    blog = get_object_or_404(Blog, pk = pk)
+    blog.delete()
+    return redirect('home')
+
+def addcomment(request, pk):
+    blog = get_object_or_404(Blog, pk=pk)
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+           comment = form.save(commit=False)
+           comment.post = blog
+           comment.save()
+           return redirect('home')
+    else:
+        form = CommentForm()
+    return render(request, 'addcomment.html', {'form':form})
+
     #url 은 항상 문자열임
 # Create your views here.

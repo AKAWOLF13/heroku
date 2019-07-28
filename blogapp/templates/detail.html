@@ -63,6 +63,20 @@
                 </p>
                 <a href="{% url 'home' %}" class="card-link">Home</a>
                 <a href="#" class="card-link">Another link</a>
+                <p>댓글 수 : {{blog.comments.count}}</p>
+                <a href="{% url 'update' detail.id %}">수정</a>
+                <a href="{% url 'delete' detail.id %}">삭제</a>
+                <hr>
+                <a href="{% url 'addcomment' pk=detail.pk %}">댓글 달기</a>
+                {% for comment in blog.comments.all %}
+                <div class="comment">
+                    <div class="date">{{comment.created_date}} {{comment.author}}</div>
+                    <p>{{comment.text|linebreaks}}</p>
+                </div>
+                {% empty %}
+                <p>아직 댓글이 없습니다</p>
+                {% endfor %}
+                <hr>
             </div>
         </div>
         <br><br>
